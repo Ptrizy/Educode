@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:quiz/controller/auth_controller.dart';
 import 'package:quiz/ui/add_materi_teacher/add_materi_teacher_screen.dart';
 import 'package:quiz/common/theme/app_font_style.dart';
@@ -9,10 +10,39 @@ import 'package:quiz/common/widgets/custom_button.dart';
 import 'package:quiz/ui/auth/login_as/login_as_screen.dart';
 import 'package:quiz/ui/student_quiz_score/student_quiz_score_screen.dart';
 
-class HomeTeacherContent extends StatelessWidget {
+class HomeTeacherContent extends StatefulWidget {
   HomeTeacherContent({super.key});
 
+  @override
+  State<HomeTeacherContent> createState() => _HomeTeacherContentState();
+}
+
+class _HomeTeacherContentState extends State<HomeTeacherContent> {
+  @override
+  void initState() {
+    super.initState();
+    _requestPermission();
+  }
+
+  Future<void> _requestPermission() async {
+    PermissionStatus status = await Permission.storage.status;
+
+    if (!status.isGranted || status.isDenied || status.isPermanentlyDenied) {
+      status = await Permission.storage.request();
+      if (status.isPermanentlyDenied) {
+        await openAppSettings();
+      }
+    }
+
+    if (status.isGranted) {
+      print('Permission granted');
+    } else if (status.isDenied) {
+      print('Permission denied');
+    }
+  }
+
   final AuthController _authController = Get.find<AuthController>();
+
   @override
   Widget build(BuildContext context) {
     return Column(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:quiz/common/theme/app_font_style.dart';
 import 'package:quiz/common/widgets/custom_button.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
@@ -20,7 +21,27 @@ class _StudentQuizScoreContentState extends State<StudentQuizScoreContent> {
   @override
   void initState() {
     super.initState();
-    _quizController.getQuizResult();
+    _requestPermission();
+  }
+
+  Future<void> _requestPermission() async {
+    PermissionStatus status = await Permission.storage.status;
+
+    if (!status.isGranted || status.isDenied || status.isPermanentlyDenied) {
+      status = await Permission.storage.request();
+      if (status.isPermanentlyDenied) {
+        await openAppSettings();
+      }
+    }
+
+    if (status.isGranted) {
+      print('Permission granted');
+      _quizController.getQuizResult();
+    } else if (status.isDenied) {
+      print('Permission denied');
+      Get.snackbar('Perizinan Penyimpanan Anda Tolak',
+          'Izinkan izin terlebih dahulu untuk melihat skor.');
+    }
   }
 
   @override

@@ -15,6 +15,7 @@ class QuizController extends GetxController {
   final quizzes = <QuizInfo>[].obs;
   final currentQuiz = Rx<QuizDetail?>(null);
   final quizResult = Rx<QuizResult?>(null);
+  final Rx<QuizAttemptResponse?> quizResults = Rx<QuizAttemptResponse?>(null);
 
   Future<void> getQuizByClassID() async {
     isLoading.value = true;
@@ -34,7 +35,7 @@ class QuizController extends GetxController {
     isLoading.value = true;
     error.value = null;
     try {
-      final response = await _quizRepository.getQuizByID();
+      final response = await _quizRepository.getQuizByID(quizId);
       currentQuiz.value = response;
       isLoading.value = false;
     } catch (e) {
@@ -45,17 +46,19 @@ class QuizController extends GetxController {
     update();
   }
 
-  Future<void> attemptQuiz(QuizAttemptRequest request) async {
-    isLoading.value = true;
-    error.value = null;
+  Future<void> attemptQuiz(int quizID, List<QuizAnswer> answers) async {
     try {
-      await _quizRepository.attemptQuiz(request);
-      isLoading.value = false;
-      Get.snackbar('Success', 'Quiz submitted successfully');
+      isLoading.value = true;
+      error.value = null;
+
+      final request = QuizAttemptRequest(quizID: quizID, answers: answers);
+
+      final result = await _quizRepository.attemptQuiz(request);
+      quizResults.value = result;
     } catch (e) {
       error.value = e.toString();
+    } finally {
       isLoading.value = false;
-      Get.snackbar('Error', 'Failed to submit Quiz: ${e.toString()}');
     }
   }
 

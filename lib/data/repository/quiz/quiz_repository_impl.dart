@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:quiz/data/local/shared_preference/class_preference.dart';
 import 'package:quiz/data/model/quiz_response.dart';
 import 'package:quiz/data/repository/quiz/quiz_repository.dart';
@@ -13,9 +16,11 @@ class QuizRepositoryImpl implements QuizRepository {
   @override
   Future<QuizAttemptResponse> attemptQuiz(QuizAttemptRequest request) async {
     try {
+      final jsonRequest = jsonEncode(request.toJson());
+
       final response = await _dio.post(
         _apiConfig.attemptQuiz(),
-        data: {request},
+        data: jsonRequest,
       );
       return QuizAttemptResponse.fromJson(response.data);
     } catch (e) {
@@ -31,7 +36,6 @@ class QuizRepositoryImpl implements QuizRepository {
       final response = await _dio.get(
         _apiConfig.getQuizByClassID(classID!),
       );
-      // Pastikan bahwa response.data adalah Map<String, dynamic>
       return QuizResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
       AppLogger.error("Error saat getQuizByClassID", e);
@@ -40,13 +44,13 @@ class QuizRepositoryImpl implements QuizRepository {
   }
 
   @override
-  Future<QuizDetail> getQuizByID() async {
+  Future<QuizDetail> getQuizByID(int id) async {
     try {
-      final classId = await ClassPreference.getClassID();
       final response = await _dio.get(
-        _apiConfig.getQuizByID(classId!),
+        _apiConfig.getQuizByID(id),
       );
-      return QuizDetail.fromJson(response.data);
+      final quizDetail = QuizDetail.fromJson(response.data);
+      return quizDetail;
     } catch (e) {
       AppLogger.error('Error saat getQuizByID', e);
       rethrow;
@@ -60,6 +64,13 @@ class QuizRepositoryImpl implements QuizRepository {
       final response = await _dio.get(
         _apiConfig.getQuizResult(classId!),
       );
+      print('ini adalah response: \n\n\n\n\n');
+      debugPrint(response.data);
+      if (response.statusCode == 200) {
+        return QuizResult.fromJson(response.data);
+      } else {
+        debugPrint('response: ${response.data}\n\n');
+      }
       return QuizResult.fromJson(response.data);
     } catch (e) {
       AppLogger.error('Error saat getQuizResult', e);

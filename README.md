@@ -2,4 +2,4 @@
 
 A new Flutter project.
 
-⚠️ WARNING: Quiz Feature Still Under Development ⚠️
+⚠️ WARNING: This project is intended for local use only and is not supported for production or online environments. ⚠️

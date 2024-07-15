@@ -9,10 +9,11 @@ class ResultQuizScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: Padding(
           padding:
               EdgeInsets.only(left: 24.w, right: 24.w, top: 12.h, bottom: 12.h),
-          child: const SingleChildScrollView(
+          child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Column(
               children: [ResultContent()],

@@ -71,13 +71,21 @@ class QuizData {
     required this.questions,
   });
 
-  factory QuizData.fromJson(Map<String, dynamic> json) => QuizData(
+  factory QuizData.fromJson(Map<String, dynamic> json) {
+    try {
+      return QuizData(
         id: json['id'],
         name: json['name'],
         description: json['description'],
-        questions: List<Question>.from(
-            json['questions'].map((x) => Question.fromJson(x))),
+        questions: (json['questions'] as List)
+            .map((q) => Question.fromJson(q))
+            .toList(),
       );
+    } catch (e) {
+      print('Error parsing QuizData: $e');
+      rethrow;
+    }
+  }
 }
 
 class Question {
@@ -87,7 +95,7 @@ class Question {
   final String optionB;
   final String optionC;
   final String optionD;
-  final String optionE;
+  final String? optionE;
 
   Question({
     required this.id,
@@ -96,7 +104,7 @@ class Question {
     required this.optionB,
     required this.optionC,
     required this.optionD,
-    required this.optionE,
+    this.optionE,
   });
 
   factory Question.fromJson(Map<String, dynamic> json) => Question(
