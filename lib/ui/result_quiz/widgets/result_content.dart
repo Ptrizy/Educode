@@ -3,14 +3,32 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:quiz/common/theme/app_font_style.dart';
 import 'package:quiz/common/widgets/custom_button.dart';
+import 'package:quiz/data/local/shared_preference/quiz_preference.dart';
 import 'package:quiz/ui/home_student/home_student_screen.dart';
 import 'package:quiz/controller/quiz_controller.dart';
 import 'package:quiz/data/model/quiz_response.dart';
+import 'package:quiz/ui/quiz/widgets/quiz_content.dart';
 
-class ResultContent extends StatelessWidget {
-  final QuizController quizController = Get.find<QuizController>();
-
+class ResultContent extends StatefulWidget {
   ResultContent({super.key});
+
+  @override
+  State<ResultContent> createState() => _ResultContentState();
+}
+
+class _ResultContentState extends State<ResultContent> {
+  final QuizController quizController = Get.find<QuizController>();
+  int? quizId;
+
+  void _getQuizId() async {
+    quizId = await QuizPreference.getQuizId();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getQuizId();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +121,7 @@ class ResultContent extends StatelessWidget {
                       widget:
                           Text("Ulangi", style: AppFontStyle.mediumLargeText),
                       onPressed: () {
-                        // Implementasi untuk mengulang quiz
+                        Get.to(QuizContent(quizId: quizId!));
                       },
                       height: 70.h,
                       width: 200.w,
