@@ -1,4 +1,4 @@
-# Iquest
+# Educode
 
 A new Flutter project.
 

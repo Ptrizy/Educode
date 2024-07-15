@@ -24,7 +24,7 @@ class LoginAsContent extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text("IQUEST",
+            Text("Educode",
                 style: AppFontStyle.headline6.copyWith(fontSize: 40)),
             SizedBox(
               width: 10.w, // Lebar antara gambar dan tulisan

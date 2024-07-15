@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.asset(
-              "assets/images/IQuest.png",
+              "assets/images/educode.png",
               width: 200,
               height: 200,
             ),
