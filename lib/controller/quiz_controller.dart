@@ -1,5 +1,10 @@
+import 'dart:io';
+import 'dart:isolate';
+import 'dart:ui';
+
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get/get.dart';
+import 'package:open_file/open_file.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:quiz/data/model/quiz_response.dart';
 import 'package:quiz/data/repository/quiz/quiz_repository.dart';
@@ -86,12 +91,18 @@ class QuizController extends GetxController {
 
     if (status.isGranted) {
       try {
-        final externalDir = await path_provider.getExternalStorageDirectory();
+        Directory? directory;
+        if (Platform.isAndroid) {
+          directory = await path_provider.getExternalStorageDirectory();
+        } else {
+          directory = await path_provider.getApplicationDocumentsDirectory();
+        }
 
-        if (externalDir != null) {
+        if (directory != null) {
+          final filePath = '${directory.path}/quiz_result.pdf';
           final taskId = await FlutterDownloader.enqueue(
             url: pdfUrl,
-            savedDir: externalDir.path,
+            savedDir: directory.path,
             fileName: "quiz_result.pdf",
             showNotification: true,
             openFileFromNotification: true,
@@ -99,18 +110,48 @@ class QuizController extends GetxController {
 
           if (taskId != null) {
             Get.snackbar('Success', 'Download started');
+
+            await _monitorDownload(taskId, filePath);
           } else {
             Get.snackbar('Error', 'Failed to start download');
           }
         } else {
-          Get.snackbar('Error', 'Could not access external storage');
+          Get.snackbar('Error', 'Could not access storage');
         }
       } catch (e) {
         Get.snackbar('Error', 'Download failed: ${e.toString()}');
       }
+    } else if (status.isPermanentlyDenied) {
+      Get.snackbar('Permission Permanently Denied',
+          'Please open app settings and grant storage permission');
+      await openAppSettings();
     } else {
       Get.snackbar(
           'Permission Denied', 'Please grant storage permission to download');
+    }
+  }
+
+  Future<void> _monitorDownload(String taskId, String filePath) async {
+    bool downloadComplete = false;
+    while (!downloadComplete) {
+      await Future.delayed(const Duration(seconds: 1));
+      final tasks = await FlutterDownloader.loadTasks();
+      final task = tasks?.firstWhere(
+        (task) => task.taskId == taskId,
+      );
+      if (task != null) {
+        if (task.status == DownloadTaskStatus.complete) {
+          downloadComplete = true;
+          Get.snackbar('Success', 'Download completed');
+          await OpenFile.open(filePath);
+        } else if (task.status == DownloadTaskStatus.failed) {
+          Get.snackbar('Error', 'Download failed');
+          break;
+        }
+      } else {
+        Get.snackbar('Error', 'Download task not found');
+        break;
+      }
     }
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:quiz/data/local/shared_preference/class_preference.dart';
 import 'package:quiz/data/local/shared_preference/quiz_preference.dart';
 import 'package:quiz/data/model/quiz_response.dart';
@@ -66,14 +65,23 @@ class QuizRepositoryImpl implements QuizRepository {
       final response = await _dio.get(
         _apiConfig.getQuizResult(classId!),
       );
-      print('ini adalah response: \n\n\n\n\n');
-      debugPrint(response.data);
+      print('ini adalah response:');
+      print(response.data); // Gunakan print biasa untuk objek non-String
+      print('Response type: ${response.data.runtimeType}');
+      print('Response content: ${response.data}');
+
       if (response.statusCode == 200) {
-        return QuizResult.fromJson(response.data);
+        if (response.data is Map<String, dynamic>) {
+          return QuizResult.fromJson(response.data as Map<String, dynamic>);
+        } else {
+          print('Unexpected response format: ${response.data.runtimeType}');
+          return null;
+        }
       } else {
-        debugPrint('response: ${response.data}\n\n');
+        print('Unexpected status code: ${response.statusCode}');
+        print('Response: ${response.data}');
+        return null;
       }
-      return QuizResult.fromJson(response.data);
     } catch (e) {
       AppLogger.error('Error saat getQuizResult', e);
       return null;
