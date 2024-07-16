@@ -11,8 +11,11 @@ import 'package:quiz/ui/auth/login_teacher/login_teacher_screen.dart';
 import 'package:quiz/ui/auth/register_student/register_student_screen.dart';
 import 'package:quiz/ui/auth/register_teacher/register_teacher_screen.dart';
 import 'package:quiz/ui/splash/splash_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
+  await dotenv.load(fileName: ".env");
+
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   SystemChrome.setSystemUIOverlayStyle(

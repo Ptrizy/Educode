@@ -1,8 +1,10 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class ApiConfig {
   final bool _isEmulator =
-      true; // ganti ini ke false jika mau menggunakan perangkat fisik atau backend di server jarak jauh.
-  final String _baseUrlEmulator = 'http://10.0.2.2:8080';
-  final String _baseUrlLocal = 'http://localhost:8080';
+      false; // ganti ini ke false jika mau menggunakan perangkat fisik atau backend di server jarak jauh.
+  final String _baseUrlEmulator = dotenv.env['BASE_URL']!;
+  final String _baseUrlLocal = dotenv.env['BASE_URL']!;
 
   String get _baseUrl => _isEmulator ? _baseUrlEmulator : _baseUrlLocal;
 
