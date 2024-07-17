@@ -76,7 +76,7 @@ class _QuizSelectState extends State<QuizSelect> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Kuis Bab 1", style: AppFontStyle.headline4),
+        Text("Kuis", style: AppFontStyle.headline4),
         SizedBox(height: 8.h),
         Container(
           padding:
