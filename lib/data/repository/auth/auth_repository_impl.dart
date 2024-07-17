@@ -62,23 +62,30 @@ class AuthRepositoryImpl implements AuthRepository {
         },
       );
 
-      final authResponse = AuthResponse.fromJson(response.data);
+      if (response.statusCode != 200) {
+        throw Exception('Login failed: Server returned ${response.statusCode}');
+      }
 
-      print(
-          'ini adalah sign in token : \n${authResponse.data!.token.toString()}\n\n');
+      final authResponse = AuthResponse.fromJson(response.data);
 
       if (authResponse.data?.token != null &&
           authResponse.data?.classId != null) {
         await AuthPreference.saveToken(authResponse.data!.token!);
         await ClassPreference.saveClassID(authResponse.data!.classId!);
+        return authResponse;
+      } else {
+        throw Exception('Login failed: Invalid response data');
       }
-
-      print('ini response data ${response.data}');
-
-      return AuthResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      if (e.response != null) {
+        throw Exception(
+            'Login failed: ${e.response?.data['message'] ?? e.message}');
+      } else {
+        throw Exception('Login failed: ${e.message}');
+      }
     } catch (e) {
       AppLogger.error('Error in signIn', e);
-      rethrow;
+      throw Exception('Login failed: ${e.toString()}');
     }
   }
 

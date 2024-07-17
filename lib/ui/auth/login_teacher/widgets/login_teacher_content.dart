@@ -87,18 +87,23 @@ class _LoginTeacherContentState extends State<LoginTeacherContent> {
           widget: Obx(() => _authController.isLoading.value
               ? const CircularProgressIndicator()
               : Text("Masuk", style: AppFontStyle.mediumLargeText)),
-          onPressed: () {
-            _authController
-                .signIn(
+          onPressed: () async {
+            if (_nameController.text.isEmpty ||
+                _passwordController.text.isEmpty) {
+              Get.snackbar('Error', 'Nama dan password harus diisi');
+              return;
+            }
+
+            await _authController.signIn(
               _nameController.text,
               _passwordController.text,
               '',
-            )
-                .then((_) {
-              if (!_authController.isLoading.value) {
-                _showPopUp();
-              }
-            });
+            );
+
+            if (_authController.isLoginSuccess.value &&
+                !_authController.isError.value) {
+              _showPopUp();
+            }
           },
           height: 80.h,
           width: double.maxFinite,

@@ -7,6 +7,8 @@ class AuthController extends GetxController {
   AuthController(this._authRepository);
 
   final isLoading = false.obs;
+  final isError = false.obs;
+  final isLoginSuccess = false.obs;
   final error = Rx<String?>(null);
 
   Future<void> signUp(String name, String password, String classRoom) async {
@@ -41,16 +43,25 @@ class AuthController extends GetxController {
 
   Future<void> signIn(String name, String password, String classRoom) async {
     isLoading.value = true;
+    isError.value = false;
     error.value = null;
-    try {
-      _authRepository.signIn(name, password, classRoom);
+    isLoginSuccess.value = false;
 
-      Get.snackbar('Success', 'Login sukses');
-      isLoading.value = false;
+    try {
+      final authResponse =
+          await _authRepository.signIn(name, password, classRoom);
+      if (authResponse.data?.token != null) {
+        isLoginSuccess.value = true;
+        Get.snackbar('Success', 'Login sukses');
+      } else {
+        throw Exception('Login gagal: Token tidak ditemukan');
+      }
     } catch (e) {
+      isError.value = true;
       error.value = e.toString();
+      Get.snackbar('Error', 'Login gagal: ${e.toString()}');
+    } finally {
       isLoading.value = false;
-      Get.snackbar('Error', 'Login failed: ${e.toString()}');
     }
   }
 
@@ -59,14 +70,21 @@ class AuthController extends GetxController {
     isLoading.value = true;
     error.value = null;
     try {
-      _authRepository.signIn(name, classRoom, password);
+      final authResponse =
+          await _authRepository.signIn(name, classRoom, password);
 
-      Get.snackbar('Success', 'Login sukses');
-      isLoading.value = false;
+      if (authResponse.data?.token != null) {
+        isLoginSuccess.value = true;
+        Get.snackbar('Success', 'Login sukses');
+      } else {
+        throw Exception('Login gagal: Token tidak ditemukan');
+      }
     } catch (e) {
+      isError.value = true;
       error.value = e.toString();
+      Get.snackbar('Error', 'Login gagal: ${e.toString()}');
+    } finally {
       isLoading.value = false;
-      Get.snackbar('Error', 'Login failed: ${e.toString()}');
     }
   }
 
