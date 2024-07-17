@@ -68,17 +68,6 @@ class _LoginTeacherContentState extends State<LoginTeacherContent> {
               isEnabled: true,
               alphabetOnly: false,
               numberOnly: false),
-          SizedBox(
-            height: 10.h,
-          ),
-          CustomFieldForm(
-              controller: _classController,
-              hintText: "Kelas",
-              maxLines: 1,
-              obscureText: false,
-              isEnabled: true,
-              alphabetOnly: false,
-              numberOnly: false)
         ]),
         SizedBox(
           height: 10.h,
@@ -103,7 +92,7 @@ class _LoginTeacherContentState extends State<LoginTeacherContent> {
                 .signIn(
               _nameController.text,
               _passwordController.text,
-              _classController.text,
+              '',
             )
                 .then((_) {
               if (!_authController.isLoading.value) {
