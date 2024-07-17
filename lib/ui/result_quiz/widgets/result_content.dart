@@ -63,7 +63,7 @@ class _ResultContentState extends State<ResultContent> {
                   child: Column(
                     children: [
                       Text(
-                        "Selamat, Nilai kamu sangat bagus ayo tingkatkan Lagi",
+                        getResultMessage(result),
                         style:
                             AppFontStyle.largeTextBold.copyWith(fontSize: 20),
                       ),
@@ -173,5 +173,30 @@ class _ResultContentState extends State<ResultContent> {
         ),
       ],
     );
+  }
+}
+
+String getResultMessage(dynamic result) {
+  if (result?.result == null) {
+    return "Hasil tidak tersedia";
+  }
+
+  int score;
+  try {
+    score = int.parse(result.result.toString());
+  } catch (e) {
+    return "Format hasil tidak valid";
+  }
+
+  if (score >= 0 && score <= 50) {
+    return "Jangan berkecil hati, tetap semangat!";
+  } else if (score >= 51 && score <= 64) {
+    return "Kamu telah berusaha dengan baik, tingkatkan lagi belajarmu!";
+  } else if (score >= 65 && score <= 74) {
+    return "Usaha yang bagus, ayo sedikit lagi!";
+  } else if (score >= 75 && score <= 100) {
+    return "Good Job!";
+  } else {
+    return "Skor di luar rentang yang valid";
   }
 }
