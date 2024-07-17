@@ -1,12 +1,9 @@
-import 'dart:isolate';
-import 'dart:ui';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:fl_downloader/fl_downloader.dart';
 import 'package:quiz/common/theme/app_font_style.dart';
 import 'package:quiz/common/widgets/custom_button.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
@@ -23,56 +20,60 @@ class StudentQuizScoreContent extends StatefulWidget {
 class _StudentQuizScoreContentState extends State<StudentQuizScoreContent> {
   final QuizController _quizController = Get.find<QuizController>();
 
-  final ReceivePort _port = ReceivePort();
+  int progress = 0;
+  int? downloadId;
+  String? status;
+  late StreamSubscription progressStream;
 
   @override
   void initState() {
     super.initState();
+    _initializeDownloader();
     _requestPermission();
+  }
 
-    IsolateNameServer.registerPortWithName(
-        _port.sendPort, 'downloader_send_port');
-    _port.listen((dynamic data) {
-      String id = data[0];
-      int status = data[1];
-      int progress = data[2];
-      setState(() {});
-    });
+  void _initializeDownloader() async {
+    try {
+      await FlDownloader.initialize();
+      progressStream = FlDownloader.progressStream.listen(
+        (event) {
+          print(
+              "Download event: ${event.status}, Progress: ${event.progress}, ID: ${event.downloadId}");
+          setState(() {
+            progress = event.progress;
+            downloadId = event.downloadId;
+            status = event.status.name;
+          });
 
-    FlutterDownloader.registerCallback(downloadCallback);
+          if (event.status == DownloadStatus.successful) {
+            print("Download successful. File path: ${event.filePath}");
+            FlDownloader.openFile(filePath: event.filePath);
+          }
+        },
+        onError: (error) {
+          print("Error in download stream: $error");
+          Get.snackbar('Error', 'Terjadi kesalahan saat mengunduh: $error');
+        },
+      );
+    } catch (e) {
+      print("Error initializing downloader: $e");
+      Get.snackbar('Error', 'Gagal menginisialisasi pengunduh: $e');
+    }
   }
 
   @override
   void dispose() {
-    IsolateNameServer.removePortNameMapping('downloader_send_port');
+    progressStream.cancel();
     super.dispose();
   }
 
-  static void downloadCallback(String id, int status, int progress) {
-    final SendPort send =
-        IsolateNameServer.lookupPortByName('downloader_send_port')!;
-    send.send([id, status, progress]);
-  }
-
   Future<void> _requestPermission() async {
-    PermissionStatus status;
-
-    if (await Permission.manageExternalStorage.isRestricted) {
-      status = await Permission.storage.request();
-    } else {
-      status = await Permission.manageExternalStorage.request();
-    }
-
-    if (status.isDenied) {
-      // Untuk Android 11+, arahkan pengguna ke pengaturan aplikasi
-      await openAppSettings();
-    }
-
-    if (status.isGranted) {
+    final permission = await FlDownloader.requestPermission();
+    if (permission == StoragePermissionStatus.granted) {
       _quizController.getQuizResult();
     } else {
       Get.snackbar('Perizinan Penyimpanan Ditolak',
-          'Izinkan izin terlebih dahulu untuk melihat skor. Status: $status');
+          'Izinkan izin terlebih dahulu untuk melihat skor. Status: $permission');
     }
   }
 
@@ -81,29 +82,7 @@ class _StudentQuizScoreContentState extends State<StudentQuizScoreContent> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Container(
-            height: 59.w,
-            width: 60.w,
-            decoration: BoxDecoration(
-              color: const Color(0XFFBDF565),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black,
-                  offset: Offset(3, 3),
-                  blurRadius: 0,
-                  spreadRadius: 1,
-                )
-              ],
-              border: Border.all(color: Colors.black, width: 2),
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: const Icon(Icons.arrow_back),
-          ),
-        ),
+        _buildBackButton(),
         SizedBox(height: 30.h),
         Text("Nilai Siswa", style: AppFontStyle.headline4),
         SizedBox(height: 20.h),
@@ -113,6 +92,30 @@ class _StudentQuizScoreContentState extends State<StudentQuizScoreContent> {
         _scoreStudent(context),
         SizedBox(height: 24.h),
       ],
+    );
+  }
+
+  Widget _buildBackButton() {
+    return GestureDetector(
+      onTap: () => Navigator.pop(context),
+      child: Container(
+        height: 59.w,
+        width: 60.w,
+        decoration: BoxDecoration(
+          color: const Color(0XFFBDF565),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black,
+              offset: Offset(3, 3),
+              blurRadius: 0,
+              spreadRadius: 1,
+            )
+          ],
+          border: Border.all(color: Colors.black, width: 2),
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: const Icon(Icons.arrow_back),
+      ),
     );
   }
 
@@ -189,7 +192,30 @@ class _StudentQuizScoreContentState extends State<StudentQuizScoreContent> {
               color: Colors.black, size: 27),
         ],
       ),
-      onPressed: _quizController.quizResult.value!.data.toString,
+      onPressed: () async {
+        if (_quizController.quizResult.value?.data != null) {
+          final permission = await FlDownloader.requestPermission();
+          if (permission == StoragePermissionStatus.granted) {
+            final id = await FlDownloader.download(
+              _quizController.quizResult.value!.data!,
+              fileName: 'quiz_result.pdf',
+            );
+            if (id != null) {
+              setState(() {
+                downloadId = id;
+              });
+              print("Download started with ID: $id");
+            } else {
+              Get.snackbar('Error', 'Gagal memulai unduhan.');
+            }
+          } else {
+            Get.snackbar('Perizinan Ditolak',
+                'Izin penyimpanan diperlukan untuk mengunduh file.');
+          }
+        } else {
+          Get.snackbar('Error', 'Tidak ada file untuk diunduh.');
+        }
+      },
       height: 75.w,
       width: double.maxFinite,
       backgroundColor: const Color(0XFFBDF565),
