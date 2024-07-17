@@ -84,7 +84,7 @@ class LearningSelectVideo extends StatelessWidget {
                       children: [
                         Text(video.title, style: AppFontStyle.regularLargeText),
                         SizedBox(height: 8.h),
-                        Text(video.description,
+                        Text('Sumber video : ${video.video}',
                             style: AppFontStyle.regularLargeText),
                       ],
                     ),
