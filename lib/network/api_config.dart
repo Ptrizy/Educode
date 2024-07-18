@@ -23,8 +23,7 @@ class ApiConfig {
   String getQuizByClassID(int classId) => "$_baseUrl/api/v1/quizzes/$classId";
   String getQuizByID(int id) => "$_baseUrl/api/v1/quizzes/detail/$id";
   String attemptQuiz() => "$_baseUrl/api/v1/quizzes/attempt";
-  String getQuizResult(int classId) =>
-      "$_baseUrl/api/v1/quizzes/result/$classId";
+  String getQuizResult(int quizId) => "$_baseUrl/api/v1/quizzes/result/$quizId";
 
   // video endpoint
   String getVideoByClassID(int classId) => "$_baseUrl/api/v1/videos/$classId";

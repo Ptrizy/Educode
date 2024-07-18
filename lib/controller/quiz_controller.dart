@@ -59,11 +59,11 @@ class QuizController extends GetxController {
     }
   }
 
-  Future<void> getQuizResult() async {
+  Future<void> getQuizResult(int quizId) async {
     isLoading.value = true;
     error.value = null;
     try {
-      quizResult.value = await _quizRepository.getQuizResult();
+      quizResult.value = await _quizRepository.getQuizResult(quizId);
       isLoading.value = false;
     } catch (e) {
       error.value = e.toString();

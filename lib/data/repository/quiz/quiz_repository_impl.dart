@@ -59,11 +59,10 @@ class QuizRepositoryImpl implements QuizRepository {
   }
 
   @override
-  Future<QuizResult?> getQuizResult() async {
+  Future<QuizResult?> getQuizResult(int quizId) async {
     try {
-      final classId = await ClassPreference.getClassID();
       final response = await _dio.get(
-        _apiConfig.getQuizResult(classId!),
+        _apiConfig.getQuizResult(quizId),
       );
       print('ini adalah response:');
       print(response.data); // Gunakan print biasa untuk objek non-String

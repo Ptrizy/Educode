@@ -10,7 +10,9 @@ import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 import 'package:quiz/controller/quiz_controller.dart';
 
 class StudentQuizScoreContent extends StatefulWidget {
-  const StudentQuizScoreContent({super.key});
+  const StudentQuizScoreContent({super.key, required this.quizId});
+
+  final int quizId;
 
   @override
   State<StudentQuizScoreContent> createState() =>
@@ -70,7 +72,7 @@ class _StudentQuizScoreContentState extends State<StudentQuizScoreContent> {
   Future<void> _requestPermission() async {
     final permission = await FlDownloader.requestPermission();
     if (permission == StoragePermissionStatus.granted) {
-      _quizController.getQuizResult();
+      _quizController.getQuizResult(widget.quizId);
     } else {
       Get.snackbar('Perizinan Penyimpanan Ditolak',
           'Izinkan izin terlebih dahulu untuk melihat skor. Status: $permission');

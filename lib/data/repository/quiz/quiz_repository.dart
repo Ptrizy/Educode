@@ -4,5 +4,5 @@ abstract class QuizRepository {
   Future<QuizResponse> getQuizByClassID();
   Future<QuizDetail> getQuizByID(int id);
   Future<QuizAttemptResponse> attemptQuiz(QuizAttemptRequest request);
-  Future<QuizResult?> getQuizResult();
+  Future<QuizResult?> getQuizResult(int quizId);
 }
