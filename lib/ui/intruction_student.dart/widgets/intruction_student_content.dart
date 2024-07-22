@@ -227,7 +227,7 @@ class IntructionStudentContent extends StatelessWidget {
       SizedBox(
         height: 20.h,
       ),
-      _logoutButton(context),
+      // _logoutButton(context),
     ]);
   }
 
@@ -297,43 +297,43 @@ class IntructionStudentContent extends StatelessWidget {
     );
   }
 
-  Column _logoutButton(BuildContext context) {
-    return Column(
-      children: [
-        CustomButton(
-          widget: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    left: 24.w, right: 24.w, top: 12.h, bottom: 12.h),
-              ),
-              const Icon(
-                Icons.logout,
-                color: Colors.white,
-              ),
-              SizedBox(
-                width: 20.w,
-              ),
-              Text("Keluar",
-                  style: AppFontStyle.mediumLargeText
-                      .copyWith(color: Colors.white)),
-            ],
-          ),
-          onPressed: () {
-            _showPopUp(context);
-          },
-          height: 80.h,
-          width: double.maxFinite,
-          backgroundColor: const Color(0XFFEF4444),
-          borderRadius: 25,
-        ),
-        SizedBox(
-          height: 10.h,
-        ),
-      ],
-    );
-  }
+  // Column _logoutButton(BuildContext context) {
+  //   return Column(
+  //     children: [
+  //       CustomButton(
+  //         widget: Row(
+  //           mainAxisAlignment: MainAxisAlignment.start,
+  //           children: [
+  //             Padding(
+  //               padding: EdgeInsets.only(
+  //                   left: 24.w, right: 24.w, top: 12.h, bottom: 12.h),
+  //             ),
+  //             const Icon(
+  //               Icons.logout,
+  //               color: Colors.white,
+  //             ),
+  //             SizedBox(
+  //               width: 20.w,
+  //             ),
+  //             Text("Keluar",
+  //                 style: AppFontStyle.mediumLargeText
+  //                     .copyWith(color: Colors.white)),
+  //           ],
+  //         ),
+  //         onPressed: () {
+  //           _showPopUp(context);
+  //         },
+  //         height: 80.h,
+  //         width: double.maxFinite,
+  //         backgroundColor: const Color(0XFFEF4444),
+  //         borderRadius: 25,
+  //       ),
+  //       SizedBox(
+  //         height: 10.h,
+  //       ),
+  //     ],
+  //   );
+  // }
 
   void _showPopUp(BuildContext context) {
     showDialog(
