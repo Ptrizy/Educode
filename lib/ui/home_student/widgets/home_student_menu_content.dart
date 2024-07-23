@@ -124,7 +124,7 @@ class HomeStudentMenuContent extends StatelessWidget {
                       ]),
                   child: Row(
                     children: [
-                      Image.asset("assets/images/Rectangle.png"),
+                      Image.asset("assets/images/Rectangle-2.png"),
                       SizedBox(
                         width: 10.w,
                       ),
@@ -179,7 +179,7 @@ class HomeStudentMenuContent extends StatelessWidget {
                       ]),
                   child: Row(
                     children: [
-                      Image.asset("assets/images/Rectangle.png"),
+                      Image.asset("assets/images/Rectangle-3.png"),
                       SizedBox(
                         width: 10.w,
                       ),
@@ -234,7 +234,7 @@ class HomeStudentMenuContent extends StatelessWidget {
                       ]),
                   child: Row(
                     children: [
-                      Image.asset("assets/images/Rectangle.png"),
+                      Image.asset("assets/images/Rectangle-4.png"),
                       SizedBox(
                         width: 10.w,
                       ),

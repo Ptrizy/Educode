@@ -47,7 +47,7 @@ class WelcomeAppBody extends StatelessWidget {
           Container(
             height: 400.h,
             width: 400.w,
-            child: Image.asset("assets/images/splash_screen.png"),
+            child: Image.asset("assets/images/loginMenu.png"),
           ),
           SizedBox(
             height: 15.h,
