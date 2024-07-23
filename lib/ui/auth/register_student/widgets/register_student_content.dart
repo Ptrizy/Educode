@@ -47,7 +47,14 @@ class _RegisterStudentContentState extends State<RegisterStudentContent> {
           SizedBox(
             height: 10.h,
           ),
-          Image.asset("assets/images/login.png"),
+          ClipRect(
+            child: Align(
+              alignment: Alignment.center,
+              heightFactor: 0.8,
+              widthFactor: 1.0,
+              child: Image.asset("assets/images/loginMenu.png"),
+            ),
+          ),
           SizedBox(
             height: 10.h,
           ),
