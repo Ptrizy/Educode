@@ -107,8 +107,7 @@ class _ResultContentState extends State<ResultContent> {
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(
-                              builder: (_) => const QuizScreen()),
+                          MaterialPageRoute(builder: (_) => const QuizScreen()),
                         );
                       },
                       height: 70.h,

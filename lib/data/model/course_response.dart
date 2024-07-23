@@ -3,7 +3,7 @@ import 'package:quiz/data/model/auth_response.dart';
 class CourseResponse {
   final Status status;
   final String message;
-  final List<CourseDetail> data;
+  final dynamic data;
 
   CourseResponse(
       {required this.status, required this.message, required this.data});
@@ -12,22 +12,29 @@ class CourseResponse {
     return CourseResponse(
       status: Status.fromJson(json['status']),
       message: json['message'],
-      data: (json['data'] as List)
-          .map((item) => CourseDetail.fromJson(item))
-          .toList(),
+      data: json['data'],
     );
+  }
+
+  List<CourseDetail> getCoursesAsList() {
+    if (data is List) {
+      return (data as List).map((item) => CourseDetail.fromJson(item)).toList();
+    } else if (data is Map<String, dynamic>) {
+      return [CourseDetail.fromJson(data)];
+    }
+    return [];
   }
 }
 
 class CourseDetail {
-  final int id;
+  final int? id;
   final int? classID;
   final String course;
   final String title;
   final String description;
 
   CourseDetail({
-    required this.id,
+    this.id,
     this.classID,
     required this.course,
     required this.title,
@@ -36,11 +43,11 @@ class CourseDetail {
 
   factory CourseDetail.fromJson(Map<String, dynamic> json) {
     return CourseDetail(
-      id: json['id'],
-      classID: json['classID'],
-      course: json['course'],
-      title: json['title'],
-      description: json['description'],
+      id: json['id'] != null ? json['id'] as int : null,
+      classID: json['classID'] != null ? json['classID'] as int : null,
+      course: json['course'] as String,
+      title: json['title'] as String,
+      description: json['description'] as String,
     );
   }
 }

@@ -30,7 +30,7 @@ class CourseController extends GetxController {
     error.value = null;
     try {
       final response = await _courseRepository.getCourseByClassId();
-      courses.value = response.data;
+      courses.value = response.getCoursesAsList();
       isLoading.value = false;
     } catch (e) {
       error.value = e.toString();
