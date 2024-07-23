@@ -76,7 +76,10 @@ class LearningSelectVideo extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.asset("assets/images/Rectangle.png"),
+                  Image.network(
+                    video.image,
+                    width: 100.w,
+                  ),
                   SizedBox(width: 10.w),
                   Expanded(
                     child: Column(

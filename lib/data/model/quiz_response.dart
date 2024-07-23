@@ -23,17 +23,20 @@ class QuizResponse {
 
 class QuizInfo {
   final int id;
+  final String image;
   final String name;
   final String description;
 
   QuizInfo({
     required this.id,
+    required this.image,
     required this.name,
     required this.description,
   });
 
   factory QuizInfo.fromJson(Map<String, dynamic> json) => QuizInfo(
         id: json['id'],
+        image: json['image'],
         name: json['name'],
         description: json['description'],
       );
@@ -62,12 +65,14 @@ class QuizData {
   final int id;
   final String name;
   final String description;
+  final String image;
   final List<Question> questions;
 
   QuizData({
     required this.id,
     required this.name,
     required this.description,
+    required this.image,
     required this.questions,
   });
 
@@ -77,6 +82,7 @@ class QuizData {
         id: json['id'],
         name: json['name'],
         description: json['description'],
+        image: json['image'],
         questions: (json['questions'] as List)
             .map((q) => Question.fromJson(q))
             .toList(),

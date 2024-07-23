@@ -146,7 +146,10 @@ class _QuizSelectState extends State<QuizSelect> {
                 ),
                 child: Row(
                   children: [
-                    Image.asset("assets/images/Rectangle.png"),
+                    Image.network(
+                      quiz.image,
+                      width: 80.w,
+                    ),
                     SizedBox(width: 10.w),
                     Expanded(
                       child: Column(

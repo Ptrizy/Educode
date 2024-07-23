@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:quiz/data/local/shared_preference/class_preference.dart';
 import 'package:quiz/data/local/shared_preference/quiz_preference.dart';
 import 'package:quiz/data/model/quiz_response.dart';
@@ -36,6 +37,7 @@ class QuizRepositoryImpl implements QuizRepository {
       final response = await _dio.get(
         _apiConfig.getQuizByClassID(classID!),
       );
+      debugPrint(jsonEncode(response.data));
       return QuizResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
       AppLogger.error("Error saat getQuizByClassID", e);
@@ -50,6 +52,7 @@ class QuizRepositoryImpl implements QuizRepository {
       final response = await _dio.get(
         _apiConfig.getQuizByID(id),
       );
+      debugPrint(jsonEncode(response.data));
       final quizDetail = QuizDetail.fromJson(response.data);
       return quizDetail;
     } catch (e) {

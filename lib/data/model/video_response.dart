@@ -22,12 +22,14 @@ class VideoResponse {
 
 class Video {
   final int id;
+  final String image;
   final String video;
   final String title;
   final String description;
 
   Video({
     required this.id,
+    required this.image,
     required this.video,
     required this.title,
     required this.description,
@@ -37,6 +39,7 @@ class Video {
     return Video(
       id: json['id'],
       video: json['video'],
+      image: json['image'],
       title: json['title'],
       description: json['description'],
     );
