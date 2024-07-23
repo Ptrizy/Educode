@@ -65,34 +65,49 @@ class LearningMateriSelect extends StatelessWidget {
                   SizedBox(
                     height: 10.h,
                   ),
-                  CustomButton(
-                      widget: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                              padding:
-                                  EdgeInsets.only(left: 15.w, right: 15.w)),
-                          Text(
-                            "Lihat",
-                            style: AppFontStyle.largeTextBold,
-                          ),
-                          SizedBox(
-                            width: 230.w,
-                          ),
-                          const Icon(
-                            Icons.arrow_forward,
-                            color: Colors.black,
-                          )
-                        ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomButton(
+                        widget: Text("Download",
+                            style: AppFontStyle.mediumLargeText),
+                        onPressed: () {},
+                        height: 70.h,
+                        width: 180.w,
+                        backgroundColor: Color(0XFFBDF565),
+                        borderRadius: 35,
                       ),
-                      onPressed: () {
-                        Navigator.push(context,
-                            TransitionFade(child: LearningMateriContent()));
-                      },
-                      height: 70.h,
-                      width: double.maxFinite,
-                      backgroundColor: const Color(0XFFBDF565),
-                      borderRadius: 24)
+                      CustomButton(
+                        widget: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                                padding:
+                                    EdgeInsets.only(left: 15.w, right: 15.w)),
+                            Text(
+                              "Lihat",
+                              style: AppFontStyle.mediumLargeText,
+                            ),
+                            SizedBox(
+                              width: 50.w,
+                            ),
+                            const Icon(
+                              Icons.arrow_forward,
+                              color: Colors.black,
+                            )
+                          ],
+                        ),
+                        onPressed: () {
+                          Navigator.push(context,
+                              TransitionFade(child: LearningMateriContent()));
+                        },
+                        height: 70.h,
+                        width: 180.w,
+                        backgroundColor: const Color(0XFFBDF565),
+                        borderRadius: 24,
+                      ),
+                    ],
+                  ),
                 ],
               ),
               Positioned(
